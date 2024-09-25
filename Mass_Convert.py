@@ -84,12 +84,16 @@ def datafile_conversion(input_file):
     T_0 = cor_coeff * (T_K0)
     p_0 = p_atm + (p[0] * 10 - p_atm_psig) * psi_2_Pa
 
+
+    output_file = os.path.join(folder, filename.replace('.txt', '.csv'))
+    
     # Choose the correct formula based on the date
     with open(output_file, 'w') as f:
-        if initial_mass == 0:
+        if is_gas():
             f.write('Time (h),T (C),p (psig),T (K),p (Pa),T_bar (K), pT ratio\n')
         else:
             f.write('Time (h),T (C),p (psig),T (K),p (Pa),T_bar (K), W (g/mol)\n')
+
         for i in range(0, n):
             time = (i * dt) / 3600.0  # Create time domain
             T_K = T[i] + 273.15  # Convert to Kelvin
@@ -104,7 +108,7 @@ def datafile_conversion(input_file):
                 p_1 = p_atm + (p[i] - p_atm_psig) * psi_2_Pa
                 p_psig = p[i] - p_atm_psig  # Corrected pressure
 
-            if initial_mass > 0:
+            if is_gas():
                 W_bar = max(0, (initial_mass - residual_mass) / ((V / R) * (p_1 / T_bar - p_0 / T_0)))
                 f.write(f"{time:.4f},{T[i]:.1f},{p_psig:.1f},{T_K:.1f},{p_1:.1f},{T_bar:.1f},{W_bar:.1f}\n")
             else:
@@ -115,13 +119,13 @@ def datafile_conversion(input_file):
 folder = input("Please enter folder path: ")
 
 # Function to check for existing CSV files and convert if necessary
-for filename in os.listdir(folder_path):
+for filename in os.listdir(folder):
     if filename.endswith('.txt'):
-        txt_file = os.path.join(folder_path, filename)
-        csv_file = os.path.join(folder_path, filename.replace('.txt', '.csv'))
+        txt_file = os.path.join(folder, filename)
+        csv_file = os.path.join(folder, filename.replace('.txt', '.csv'))
         # Check if the CSV file already exists
         if not os.path.exists(csv_file):
             print(f"Converting {filename} to CSV...")
-            datafile_conversion(txt_file, csv_file)
+            datafile_conversion(txt_file)
         else:
             print(f"CSV file for {filename} already exists. Skipping...")
