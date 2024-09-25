@@ -89,7 +89,7 @@ def datafile_conversion(input_file):
     
     # Choose the correct formula based on the date
     with open(output_file, 'w') as f:
-        if is_gas():
+        if is_gas:
             f.write('Time (h),T (C),p (psig),T (K),p (Pa),T_bar (K), pT ratio\n')
         else:
             f.write('Time (h),T (C),p (psig),T (K),p (Pa),T_bar (K), W (g/mol)\n')
@@ -108,7 +108,7 @@ def datafile_conversion(input_file):
                 p_1 = p_atm + (p[i] - p_atm_psig) * psi_2_Pa
                 p_psig = p[i] - p_atm_psig  # Corrected pressure
 
-            if is_gas():
+            if is_gas:
                 W_bar = max(0, (initial_mass - residual_mass) / ((V / R) * (p_1 / T_bar - p_0 / T_0)))
                 f.write(f"{time:.4f},{T[i]:.1f},{p_psig:.1f},{T_K:.1f},{p_1:.1f},{T_bar:.1f},{W_bar:.1f}\n")
             else:
