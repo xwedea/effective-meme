@@ -108,12 +108,14 @@ def datafile_conversion(input_file):
                 p_1 = p_atm + (p[i] - p_atm_psig) * psi_2_Pa
                 p_psig = p[i] - p_atm_psig  # Corrected pressure
 
+
             if is_gas:
-                W_bar = max(0, (initial_mass - residual_mass) / ((V / R) * (p_1 / T_bar - p_0 / T_0)))
-                f.write(f"{time:.4f},{T[i]:.1f},{p_psig:.1f},{T_K:.1f},{p_1:.1f},{T_bar:.1f},{W_bar:.1f}\n")
-            else:
                 ratio_bar = (p_1 / p_0) * (T_0 / T_bar)
                 f.write(f"{time:.4f},{T[i]:.1f},{p_psig:.1f},{T_K:.1f},{p_1:.1f},{T_bar:.1f},{ratio_bar:.4f}\n")
+            else:
+                W_bar = max(0, (initial_mass - residual_mass) / ((V / R) * (p_1 / T_bar - p_0 / T_0)))
+                f.write(f"{time:.4f},{T[i]:.1f},{p_psig:.1f},{T_K:.1f},{p_1:.1f},{T_bar:.1f},{W_bar:.1f}\n")
+
 
 # Run the conversion on all files in the folder
 folder = input("Please enter folder path: ")
